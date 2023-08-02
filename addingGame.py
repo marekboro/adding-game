@@ -9,7 +9,6 @@ equations = []
 argsProvided = False
 maxRounds: int
 
-
 def main(input: list[str]):
     checkArgs(input)
     runGames()
@@ -30,7 +29,6 @@ def checkArgs(input: list[str]):
             print("max runs cannot be 0 or less")
             sys.exit()
 
-
 def runGames():
     global argsProvided
     global maxRounds
@@ -41,7 +39,6 @@ def runGames():
             runTimes(maxRounds)
     else:
         runInfinite()
-
 
 def runTimes(maxRounds: int):
     global questionsAsked
@@ -56,14 +53,14 @@ def runTimes(maxRounds: int):
         else:
             runOnce()
 
-
 def runOnce():
     global questionsAsked
     number = generateRandomNumber()
-    equation = generateEquationForNumber(number)
-    # textEquation = generateTextEquationForNumber(number)
+    # equation = generateEquationForNumber(number)
+    # runQuestion(equation, number)
+    textEquation = generateTextEquationForNumber(number)
+    runQuestion(textEquation, number)
 
-    runQuestion(equation, number)
     questionsAsked = questionsAsked+1
 
 def runInfinite():
@@ -73,11 +70,11 @@ def runInfinite():
         if questionsAsked == 0:
             runOnce()
         choice = get_choice('play again? ')
+        checkExit(choice)
         if choice == "n" or choice == "no":
             runAgain = False
         else:
             runOnce()
-
 
 def logOutAllGames():
     global equations
@@ -86,7 +83,7 @@ def logOutAllGames():
 
 
 def generateRandomNumber():
-    return random.randrange(16, 35)
+    return random.randrange(16, 39)
 
 
 def generateRandomNumberMaxedAt(max: int):
@@ -95,12 +92,14 @@ def generateRandomNumberMaxedAt(max: int):
         max = 40
     min = round((0.25*max), 0)
     return random.randrange(min, max)
-# def generateTextEquationForNumber(number):
-#     if number > 28:
-#         return createFourSegmentEquation(number)
-#     if number > 28:
-#         return createthreeSegmentEquation(number)
-#     return createTwoSegmentEquation(number)
+
+def generateTextEquationForNumber(number):
+    if number > 30:
+        return createFourSegmentEquation(number)
+    elif number > 22:
+        return createThreeSegmentEquation(number)
+    else:
+        return createTwoSegmentEquation(number)
 
 
 def generateEquationForNumber(number: int):
@@ -110,10 +109,37 @@ def generateEquationForNumber(number: int):
 
 
 def createFourSegmentEquation(number: int):
-    first = random.randrange(5, 12)
-    second = random.randrange(5, number-first)
-    third = random.randrange(5, number-second-first)
-    fourth = number-first-second-third
+    language = "English"
+    first, second, third, fourth = splitNumberInFour(number)
+    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} + {lc.convertIntToLanguage(fourth,language)} = "
+
+def createThreeSegmentEquation(number: int):
+    language = "English"
+    first, second, third = splitNumberInThree(number)
+    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} = "
+
+def createTwoSegmentEquation(number: int):
+    language = "English"
+    first, second = splitNumberInTwo(number)
+    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} = "
+
+def splitNumberInTwo(number:int):
+    radical = random.randrange(1,int(number/5)+1)
+    first = int(number/2)+radical
+    second = number-first
+    return first, second
+
+def splitNumberInThree(number:int):
+    radical = random.randrange(1,int(number/4))
+    first = int(number/2)-radical
+    second, third = splitNumberInTwo(number-first)
+    return first, second, third
+
+def splitNumberInFour(number:int):
+    radical = random.randrange(1,int(number/4))
+    first = int(number/2)-radical
+    second, third, fourth = splitNumberInThree(number-first)
+    return first, second, third, fourth
 
 
 def generateThreePartEquation(number: int):
