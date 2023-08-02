@@ -1,4 +1,5 @@
 import sys
+import _thread
 import random
 import languageConverter as lc
 
@@ -13,7 +14,6 @@ def main(input: list[str]):
     checkArgs(input)
     runGames()
     logOutAllGames()
-
 
 def checkArgs(input: list[str]):
     global argsProvided
@@ -46,7 +46,8 @@ def runGames():
 def runTimes(maxRounds: int):
     global questionsAsked
     global runAgain
-    while runAgain and questionsAsked < maxRounds:
+
+    while runAgain and questionsAsked <= maxRounds:
         if questionsAsked == 0:
             runOnce()
         choice = get_choice('play again? ')
@@ -65,14 +66,6 @@ def runOnce():
     runQuestion(equation, number)
     questionsAsked = questionsAsked+1
 
-
-def runOnceOld():
-    number = generateRandomNumber()
-    equation = generateEquationForNumber(number)
-    # textEquation = generateTextEquationForNumber(number)
-    runQuestion(equation, number)
-
-
 def runInfinite():
     global questionsAsked
     global runAgain
@@ -90,16 +83,6 @@ def logOutAllGames():
     global equations
     for index, equation in enumerate(equations):
         print(f"{index+1} =>    {equation}")
-
-
-def runInfiniteOld():
-    global runAgain
-    while runAgain:
-        choice = get_choice('play again? ')
-        if choice == "n" or choice == "no":
-            runAgain = False
-        else:
-            runOnce()
 
 
 def generateRandomNumber():
@@ -152,26 +135,26 @@ def runQuestion(equarion: str, number: int):
     while (True):
         try:
             result = get_int(equarion)
-            if result == number:
-                equations.append(f"{equarion}{result}")
-                print("Correct!")
-                return "next"
-        except:
-            pass
-
-
-def get_int(prompt):
-    while (True):
-        try:
-            # return int(checkExit(input(prompt)))
-            return int(input(prompt))
         except ValueError:
             pass
 
+        if result == number:
+            equations.append(f"{equarion}{result}")
+            print("Correct!")
+            return "next"
+        
+def get_int(prompt):
+    while (True):
+        try:
+            userInput = input(prompt)
+            return int(userInput)
+        except ValueError:
+            checkExit(userInput)
+            pass
 
 def checkExit(someString: str):
-    if someString == "q" or "quit":
-        sys.exit()
+    if someString == "q" or someString == "quit":
+        sys.exit()  
     else:
         return someString
 
