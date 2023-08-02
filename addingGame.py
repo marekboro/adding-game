@@ -1,5 +1,4 @@
 import sys
-import _thread
 import random
 import languageConverter as lc
 
@@ -8,6 +7,8 @@ questionsAsked = 0
 equations = []
 argsProvided = False
 maxRounds: int
+textSelected:False
+languageSelected= "English"
 
 def main(input: list[str]):
     checkArgs(input)
@@ -17,6 +18,8 @@ def main(input: list[str]):
 def checkArgs(input: list[str]):
     global argsProvided
     global maxRounds
+    global textSelected
+    global languageSelected
     input.remove(input[0])
     if int(input.__len__()) > 0:
         argsProvided = True
@@ -28,6 +31,9 @@ def checkArgs(input: list[str]):
         if maxRounds < 1:
             print("max runs cannot be 0 or less")
             sys.exit()
+    if int(input.__len__()) > 1:
+        textSelected = True
+        languageSelected = lc.verifiedLanguage(input[1])
 
 def runGames():
     global argsProvided
@@ -54,14 +60,15 @@ def runTimes(maxRounds: int):
             runOnce()
 
 def runOnce():
-    global questionsAsked
+    global textSelected
+    global languageSelected
     number = generateRandomNumber()
-    # equation = generateEquationForNumber(number)
-    # runQuestion(equation, number)
-    textEquation = generateTextEquationForNumber(number)
-    runQuestion(textEquation, number)
-
-    questionsAsked = questionsAsked+1
+    if textSelected:
+        textEquation = generateTextEquationForNumber(number,languageSelected)
+        runQuestion(textEquation, number)
+    else:
+        equation = generateEquationForNumber(number)
+        runQuestion(equation, number)
 
 def runInfinite():
     global questionsAsked
@@ -81,10 +88,8 @@ def logOutAllGames():
     for index, equation in enumerate(equations):
         print(f"{index+1} =>    {equation}")
 
-
 def generateRandomNumber():
     return random.randrange(16, 39)
-
 
 def generateRandomNumberMaxedAt(max: int):
     if (max > 50):
@@ -93,33 +98,28 @@ def generateRandomNumberMaxedAt(max: int):
     min = round((0.25*max), 0)
     return random.randrange(min, max)
 
-def generateTextEquationForNumber(number):
+def generateTextEquationForNumber(number,language):
     if number > 30:
-        return createFourSegmentEquation(number)
+        return createFourSegmentEquation(number,language)
     elif number > 22:
-        return createThreeSegmentEquation(number)
+        return createThreeSegmentEquation(number,language)
     else:
-        return createTwoSegmentEquation(number)
-
+        return createTwoSegmentEquation(number,language)
 
 def generateEquationForNumber(number: int):
     if (number > 20):
         return generateThreePartEquation(number)
     return generateTwoPartEquation(number)
 
-
-def createFourSegmentEquation(number: int):
-    language = "English"
+def createFourSegmentEquation(number: int,language:str):
     first, second, third, fourth = splitNumberInFour(number)
     return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} + {lc.convertIntToLanguage(fourth,language)} = "
 
-def createThreeSegmentEquation(number: int):
-    language = "English"
+def createThreeSegmentEquation(number: int,language:str):
     first, second, third = splitNumberInThree(number)
     return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} = "
 
-def createTwoSegmentEquation(number: int):
-    language = "English"
+def createTwoSegmentEquation(number: int,language:str):
     first, second = splitNumberInTwo(number)
     return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} = "
 
@@ -141,22 +141,20 @@ def splitNumberInFour(number:int):
     second, third, fourth = splitNumberInThree(number-first)
     return first, second, third, fourth
 
-
 def generateThreePartEquation(number: int):
     first = random.randrange(5, 12)
     second = random.randrange(5, number-first)
     third = number-first-second
     return f"{first} + {second} + {third} = "
 
-
 def generateTwoPartEquation(number: int):
     first = random.randrange(7, 14)
     second = number-first
     return f"{first} + {second} = "
 
-
 def runQuestion(equarion: str, number: int):
     global equations
+    global questionsAsked
 
     while (True):
         try:
@@ -165,6 +163,7 @@ def runQuestion(equarion: str, number: int):
             pass
 
         if result == number:
+            questionsAsked = questionsAsked+1
             equations.append(f"{equarion}{result}")
             print("Correct!")
             return "next"
@@ -184,14 +183,12 @@ def checkExit(someString: str):
     else:
         return someString
 
-
 def get_choice(prompt):
     while (True):
         try:
             return input(prompt)
         except ValueError:
             pass
-
 
 if __name__ == "__main__":
     main(sys.argv)
