@@ -1,6 +1,7 @@
 import sys
 import random
 import languageConverter as lc
+from graphics import *
 
 runAgain = True
 questionsAsked = 0
@@ -15,6 +16,7 @@ def main(input: list[str]):
     runGames()
     logOutAllGames()
 
+
 def checkArgs(input: list[str]):
     global argsProvided
     global maxRounds
@@ -23,6 +25,7 @@ def checkArgs(input: list[str]):
     input.remove(input[0])
     if int(input.__len__()) > 0:
         argsProvided = True
+        textSelected = False
         try:
             maxRounds = int(input[0])
         except ValueError:
@@ -38,6 +41,7 @@ def checkArgs(input: list[str]):
 def runGames():
     global argsProvided
     global maxRounds
+
     if argsProvided:
         if maxRounds == 1:
             runOnce()
@@ -63,7 +67,7 @@ def runOnce():
     global textSelected
     global languageSelected
     number = generateRandomNumber()
-    if textSelected:
+    if textSelected==True:
         textEquation = generateTextEquationForNumber(number,languageSelected)
         runQuestion(textEquation, number)
     else:
@@ -156,6 +160,30 @@ def runQuestion(equarion: str, number: int):
     global equations
     global questionsAsked
 
+    ##
+    maxFontSize = 36
+    equationWidth = (equarion.__len__()*maxFontSize)
+    entryWidth = maxFontSize*2
+    windowWidth = equationWidth + entryWidth + maxFontSize
+    windowHeight= 2*maxFontSize
+
+    gameWindow = GraphWin("Adding Game",windowWidth,windowHeight)
+    gameWindow.setBackground("white")
+
+    point = Point(int(equationWidth),int(maxFontSize))
+    textToDraw = Text(point,equarion)
+   
+    circle = Circle(  Point(int(equationWidth),int(maxFontSize)),10  )##.setFill("red")
+    # circle = Circle(Point(50,50), 10)
+    # c.draw(gameWindow)
+    textToDraw.setSize(maxFontSize)
+    entry = Entry(Point(windowWidth+maxFontSize,maxFontSize),4).setSize(maxFontSize)
+    # gamescreen = [textToDraw,entry]
+    gamescreen = [textToDraw,circle]
+    for element in gamescreen:
+        element.draw(gameWindow)
+    
+    ##
     while (True):
         try:
             result = get_int(equarion)
