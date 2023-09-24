@@ -160,28 +160,28 @@ def runQuestion(equarion: str, number: int):
     global equations
     global questionsAsked
 
-    ##
-    maxFontSize = 36
-    equationWidth = (equarion.__len__()*maxFontSize)
-    entryWidth = maxFontSize*2
-    windowWidth = equationWidth + entryWidth + maxFontSize
-    windowHeight= 2*maxFontSize
+    # ##
+    # maxFontSize = 36
+    # equationWidth = (equarion.__len__()*maxFontSize)
+    # entryWidth = maxFontSize*2
+    # windowWidth = equationWidth + entryWidth + maxFontSize
+    # windowHeight= 2*maxFontSize
 
-    gameWindow = GraphWin("Adding Game",windowWidth,windowHeight)
-    gameWindow.setBackground("white")
+    # gameWindow = GraphWin("Adding Game",windowWidth,windowHeight)
+    # gameWindow.setBackground("white")
 
-    point = Point(int(equationWidth),int(maxFontSize))
-    textToDraw = Text(point,equarion)
+    # point = Point(int(equationWidth),int(maxFontSize))
+    # textToDraw = Text(point,equarion)
    
-    circle = Circle(  Point(int(equationWidth),int(maxFontSize)),10  )##.setFill("red")
-    # circle = Circle(Point(50,50), 10)
-    # c.draw(gameWindow)
-    textToDraw.setSize(maxFontSize)
-    entry = Entry(Point(windowWidth+maxFontSize,maxFontSize),4).setSize(maxFontSize)
-    # gamescreen = [textToDraw,entry]
-    gamescreen = [textToDraw,circle]
-    for element in gamescreen:
-        element.draw(gameWindow)
+    # circle = Circle(  Point(int(equationWidth),int(maxFontSize)),10  )##.setFill("red")
+    # # circle = Circle(Point(50,50), 10)
+    # # c.draw(gameWindow)
+    # textToDraw.setSize(maxFontSize)
+    # entry = Entry(Point(windowWidth+maxFontSize,maxFontSize),4).setSize(maxFontSize)
+    # # gamescreen = [textToDraw,entry]
+    # gamescreen = [textToDraw,circle]
+    # for element in gamescreen:
+    #     element.draw(gameWindow)
     
     ##
     while (True):
