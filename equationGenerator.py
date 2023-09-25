@@ -66,3 +66,13 @@ def generateRandomNumberMaxedAt(max: int):
         max = 40
     min = round((0.25*max), 0)
     return random.randrange(min, max)
+
+def generateEquation(textSelected, languageSelected):
+    number = generateRandomNumber()
+    equation = ""
+    if textSelected:
+        equation = generateTextEquationForNumber(number,languageSelected)
+    else:
+        equation = generateEquationForNumber(number)
+    return equation, number
+    ...

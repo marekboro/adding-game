@@ -1,5 +1,4 @@
 import sys
-import random
 import languageConverter as lc
 from graphics import *
 import equationGenerator as eqGen
@@ -14,8 +13,13 @@ languageSelected= "English"
 
 def main(input: list[str]):
     checkArgs(input)
+    # TODO : remove use of globals etc.
+    # create variables by a renamed checkArgs => createGame() which returns a game configuration obj?
+     
     runGames()
+    #runGame rather thanRunGames which takes the game obj and does all that jazz.
     logOutAllGames()
+    #logOutAll games would access game obj etc to get access at the logs. 
 
 
 def checkArgs(input: list[str]):
@@ -54,13 +58,7 @@ def runGames():
 def runOnce():
     global textSelected
     global languageSelected
-    number = eqGen.generateRandomNumber()
-    if textSelected==True:
-        textEquation = eqGen.generateTextEquationForNumber(number,languageSelected)
-        runQuestion(textEquation, number)
-    else:
-        equation = eqGen.generateEquationForNumber(number)
-        runQuestion(equation, number)
+    runQuestion(*eqGen.generateEquation(textSelected,languageSelected))
          
 def runTimes(maxRounds: int):
     global questionsAsked
