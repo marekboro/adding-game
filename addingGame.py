@@ -2,13 +2,14 @@ import sys
 import random
 import languageConverter as lc
 from graphics import *
+import equationGenerator as eqGen
 
 runAgain = True
 questionsAsked = 0
 equations = []
 argsProvided = False
 maxRounds: int
-textSelected:False
+textSelected = False
 languageSelected= "English"
 
 def main(input: list[str]):
@@ -50,111 +51,48 @@ def runGames():
     else:
         runInfinite()
 
-def runTimes(maxRounds: int):
-    global questionsAsked
-    global runAgain
-
-    while runAgain and questionsAsked <= maxRounds:
-        if questionsAsked == 0:
-            runOnce()
-        choice = get_choice('play again? ')
-        if choice == "n" or choice == "no":
-            runAgain = False
-        else:
-            runOnce()
-
 def runOnce():
     global textSelected
     global languageSelected
-    number = generateRandomNumber()
+    number = eqGen.generateRandomNumber()
     if textSelected==True:
-        textEquation = generateTextEquationForNumber(number,languageSelected)
+        textEquation = eqGen.generateTextEquationForNumber(number,languageSelected)
         runQuestion(textEquation, number)
     else:
-        equation = generateEquationForNumber(number)
+        equation = eqGen.generateEquationForNumber(number)
         runQuestion(equation, number)
-
+         
+def runTimes(maxRounds: int):
+    global questionsAsked
+    global runAgain
+    roundsleft = maxRounds
+    while runAgain and roundsleft >0:
+        runOnce()
+        roundsleft -=1
+        if roundsleft >0:
+            runAgain = checkIfRunAgain()
+            
 def runInfinite():
     global questionsAsked
     global runAgain
     while runAgain:
-        if questionsAsked == 0:
-            runOnce()
-        choice = get_choice('play again? ')
-        checkExit(choice)
-        if choice == "n" or choice == "no":
-            runAgain = False
-        else:
-            runOnce()
+        runOnce()
+        runAgain = checkIfRunAgain()
 
-def logOutAllGames():
-    global equations
-    for index, equation in enumerate(equations):
-        print(f"{index+1} =>    {equation}")
 
-def generateRandomNumber():
-    return random.randrange(16, 39)
 
-def generateRandomNumberMaxedAt(max: int):
-    if (max > 50):
-        print("He is only a child you monster, changing max to 40")
-        max = 40
-    min = round((0.25*max), 0)
-    return random.randrange(min, max)
 
-def generateTextEquationForNumber(number,language):
-    if number > 30:
-        return createFourSegmentEquation(number,language)
-    elif number > 22:
-        return createThreeSegmentEquation(number,language)
-    else:
-        return createTwoSegmentEquation(number,language)
+def checkIfRunAgain():
+    choice = get_choice('play again? ')
+    return choice != 'n' and choice != 'no'
 
-def generateEquationForNumber(number: int):
-    if (number > 20):
-        return generateThreePartEquation(number)
-    return generateTwoPartEquation(number)
-
-def createFourSegmentEquation(number: int,language:str):
-    first, second, third, fourth = splitNumberInFour(number)
-    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} + {lc.convertIntToLanguage(fourth,language)} = "
-
-def createThreeSegmentEquation(number: int,language:str):
-    first, second, third = splitNumberInThree(number)
-    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} + {lc.convertIntToLanguage(third,language)} = "
-
-def createTwoSegmentEquation(number: int,language:str):
-    first, second = splitNumberInTwo(number)
-    return f"{lc.convertIntToLanguage(first,language)} + {lc.convertIntToLanguage(second,language)} = "
-
-def splitNumberInTwo(number:int):
-    radical = random.randrange(1,int(number/5)+1)
-    first = int(number/2)+radical
-    second = number-first
-    return first, second
-
-def splitNumberInThree(number:int):
-    radical = random.randrange(1,int(number/4))
-    first = int(number/2)-radical
-    second, third = splitNumberInTwo(number-first)
-    return first, second, third
-
-def splitNumberInFour(number:int):
-    radical = random.randrange(1,int(number/4))
-    first = int(number/2)-radical
-    second, third, fourth = splitNumberInThree(number-first)
-    return first, second, third, fourth
-
-def generateThreePartEquation(number: int):
-    first = random.randrange(5, 12)
-    second = random.randrange(5, number-first)
-    third = number-first-second
-    return f"{first} + {second} + {third} = "
-
-def generateTwoPartEquation(number: int):
-    first = random.randrange(7, 14)
-    second = number-first
-    return f"{first} + {second} = "
+def get_choice(prompt):
+    while (True):
+        try:
+            return input(prompt)
+        except ValueError:
+            pass
+    
 
 def runQuestion(equarion: str, number: int):
     global equations
@@ -211,12 +149,10 @@ def checkExit(someString: str):
     else:
         return someString
 
-def get_choice(prompt):
-    while (True):
-        try:
-            return input(prompt)
-        except ValueError:
-            pass
+def logOutAllGames():
+    global equations
+    for index, equation in enumerate(equations):
+        print(f"{index+1} =>    {equation}")
 
 if __name__ == "__main__":
     main(sys.argv)
